@@ -47,39 +47,6 @@ public class Main {
         return crosswordBuilder.build();
     }
 
-    public static double getTestTime(int crosswordSize, int probes){
-        Crossword crossword = getCrossword(crosswordSize, false);
-        double result = 0;
-        for(int i = 0; i < probes; i++){
-            System.out.println("crossword: " + (i + 1));
-            try{
-                crossword = getCrossword(crosswordSize, false);
-            }catch (CrosswordException e){
-                i--;
-                System.out.println("Error: "+e.getMessage() + Arrays.toString(e.getStackTrace()));
-                continue;
-            }
-            result += crossword.getTimeInMilliseconds();
-        }
-        result = result / (double) probes;
-        return result;
-    }
-
-    public static double getSingleTestTime(int crosswordSize, boolean withClue){
-        try{
-            Crossword crossword = getCrossword(crosswordSize, withClue);
-        }catch (CrosswordException _){}
-        Crossword crossword;
-        double time = 0.0;
-        try{
-            crossword = getCrossword(crosswordSize, withClue);
-            time = crossword.getTimeInMilliseconds();
-        }catch (CrosswordException e){
-            System.out.println("Error: "+e.getMessage() + Arrays.toString(e.getStackTrace()));
-        }
-        return time;
-    }
-
     public static void testPrint(int crosswordSize){
 
         Crossword crossword = getCrossword(crosswordSize, true);
@@ -103,28 +70,7 @@ public class Main {
     public static void main(String[] args) {
 
         testPrint(15);
+        testPrint(15);
 
-        String fileName = "crossword_test_time_results.csv";
-
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("CrosswordSize;P1t;P2;P3;P4;P5;P6;P7;P8;P9;P10\n");
-
-            for (int crosswordSize = 1; crosswordSize <= 100; crosswordSize++) {
-                System.out.println("Crossword number: " + crosswordSize);
-                StringBuilder sb = new StringBuilder();
-                sb.append(crosswordSize);
-
-                for (int i = 0; i < 10; i++) {
-                    double singleTestTime = getSingleTestTime(crosswordSize, false);
-                    sb.append(";").append(singleTestTime);
-                }
-
-                writer.write(sb + "\n");
-            }
-
-            System.out.println("Wyniki eksperymentu zapisane do pliku: " + fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
