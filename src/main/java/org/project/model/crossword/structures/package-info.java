@@ -1,0 +1,1 @@
+package org.project.model.crossword.structures;
