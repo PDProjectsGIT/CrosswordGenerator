@@ -9,7 +9,7 @@ This project aims to create a crossword puzzle generator in Java. It consists of
 - Provides public interfaces for accessing crossword functionality.
 - Includes a factory class for creating crosswords and returning appropriate interfaces. 
 
-### 2) SJPGameParser
+### 2) SJP
 - Contains a class for parsing data (words and definitions) from the Polish language dictionary website sjp.pl.
 - Allows for the selection of random words and their definitions.
 - Assists in testing the crossword generator. 
