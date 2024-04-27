@@ -8,9 +8,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Class that represents adjustable structure.
+ * Class that represents adjustable array structure.
  * It's main feature is to insert new values even in non-existing index.
  * @param <T>
+ *
+ * @author Pawe&#x142; Drzazga
+ * @version 1.0
  */
 public class DynamicArray<T> implements Iterable<T>{
 
