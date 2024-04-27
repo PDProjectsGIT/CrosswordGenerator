@@ -4,36 +4,77 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Class that represent adjustable matrix structure. It's extends DynamicArray class.
+ * It uses the same main array and assigns positions for rows and columns based on the array's size,
+ * calculating these positions accordingly.
+ * @param <T>
+ *
+ * @author Pawe&#x142; Drzazga
+ * @version 1.0
+ */
 public class DynamicMatrix<T> extends DynamicArray<T> {
 
+    /**
+     * Represents the number of rows in the DynamicMatrix.
+     */
     private int numberOfRows;
+
+    /**
+     * Represents the number of columns in the DynamicMatrix.
+     */
     private int numberOfColumns;
 
+    /**
+     * Constructs a new instance of the DynamicMatrix class with the default size of 0.
+     */
     public DynamicMatrix(){
         super();
         this.numberOfRows = 0;
         this.numberOfColumns = 0;
     }
 
+    /**
+     * Constructs a new instance of the DynamicMatrix class with specified row and column number .
+     * @param rows A specified number of rows.
+     * @param columns A specified number of columns.
+     */
     public DynamicMatrix(int rows, int columns){
         super(rows*columns);
         this.numberOfRows = rows;
         this.numberOfColumns = columns;
     }
 
+    /**
+     * Constructs a new instance of the DynamicMatrix class initialized with elements from another DynamicMatrix object.
+     * @param dynamicMatrix Another DynamicArray object whose elements will be copied.
+     */
     public DynamicMatrix(DynamicMatrix<T> dynamicMatrix){
         super(dynamicMatrix);
         this.numberOfRows = dynamicMatrix.getNumberOfRows();
         this.numberOfColumns = dynamicMatrix.getNumberOfColumns();
     }
 
+    /**
+     * Retrieves the value at the specified row and column index.
+     * @param rowIndex The row index from witch to retrieve the value.
+     * @param columnIndex The column index from witch to retrieve the value.
+     * @return The value at the specified row and column index.
+     */
     public Optional<T> getValue(int rowIndex, int columnIndex) {
         return Optional.ofNullable(data[calculateIndex(rowIndex, columnIndex)]);
     }
 
+    /**
+     * Sets the value at the specified index.
+     * @param rowIndex The row index at which to set the value.
+     * @param columnIndex The column index at which to set the value.
+     * @param value The value to be stored at the specified index.
+     */
     public void setValue(int rowIndex, int columnIndex, T value) {
         data[calculateIndex(rowIndex, columnIndex)] = value;
     }
+
 
     public Optional<T> getValueIfInBounds(int rowIndex, int columnIndex){
         if(rowIndex < 0 || columnIndex < 0)
@@ -43,6 +84,13 @@ public class DynamicMatrix<T> extends DynamicArray<T> {
         return getValue(rowIndex, columnIndex);
     }
 
+    /**
+     * Sets the value at the specified index. If the index exceeds the current size of the DynamicMatrix,
+     * the DynamicMatrix will resize to accommodate the new value.
+     * @param rowIndex The row index at which to set the value.
+     * @param columnIndex The column index at which to set the value.
+     * @param value The value to be stored at the specified index.
+     */
     @SuppressWarnings("unchecked")
     public void setValueOutOfBounds(int rowIndex, int columnIndex, T value){
         if(rowIndex >= 0 && columnIndex >= 0 && rowIndex < numberOfRows && columnIndex < numberOfColumns) {
