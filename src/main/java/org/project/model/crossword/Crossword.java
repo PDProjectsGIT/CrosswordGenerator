@@ -17,7 +17,7 @@ public interface Crossword {
     public int getNumberOfColumns();
     public int getNumberOfRows();
     public void printCrosswordInConsole();
-    public Stream<CrosswordLetter> stream();
+    public Stream<CrosswordLetter> streamLetters();
     public double getTimeInMilliseconds();
     public int getWordsCount();
 }

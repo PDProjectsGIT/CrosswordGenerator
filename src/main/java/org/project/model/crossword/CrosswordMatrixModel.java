@@ -6,8 +6,7 @@ import org.project.model.crossword.structures.DynamicMatrix;
 import java.util.*;
 import java.util.stream.Stream;
 
-@Deprecated
-final class CrosswordModel implements Crossword {
+final class CrosswordMatrixModel extends DynamicMatrix<CrosswordLetterModel> implements Crossword {
 
     final private HashMap<String, String> wordsWithMeanings;
 
@@ -17,27 +16,18 @@ final class CrosswordModel implements Crossword {
 
     private String wordClueDefinition;
 
-    private DynamicMatrix<CrosswordLetterModel> crossword;
-
-    CrosswordModel(){
+    CrosswordMatrixModel(){
+        super();
         generationTime = 0;
         wordsWithMeanings = new HashMap<>();
-        crossword = new DynamicMatrix<>();
     }
 
-    @Override
-    public int getNumberOfRows(){
-        return crossword.getNumberOfRows();
-    }
-
-    @Override
-    public int getNumberOfColumns(){
-        return crossword.getNumberOfColumns();
-    }
-
-    @Override
-    public int getSize() {
-        return crossword.getSize();
+    CrosswordMatrixModel(CrosswordMatrixModel crosswordMatrixModel){
+        super(crosswordMatrixModel);
+        this.generationTime = crosswordMatrixModel.generationTime;
+        this.wordsWithMeanings = crosswordMatrixModel.wordsWithMeanings;
+        this.wordClue = crosswordMatrixModel.wordClue;
+        this.wordClueDefinition = crosswordMatrixModel.wordClueDefinition;
     }
 
     @Override
@@ -49,29 +39,27 @@ final class CrosswordModel implements Crossword {
 
     @Override
     public @NotNull Stream<CrosswordLetter> streamLetters(){
-        Stream.Builder<CrosswordLetter> builder = Stream.builder();
-        crossword.forEach(builder::add);
-        return builder.build();
+        return stream().map(letter -> letter);
     }
 
     @Override
     public Optional<CrosswordLetter> getCrosswordLetter(int index){
-        Optional<CrosswordLetterModel> optionalCrosswordLetterModel = crossword.getValue(index);
+        Optional<CrosswordLetterModel> optionalCrosswordLetterModel = getValue(index);
         return optionalCrosswordLetterModel.map(letter -> letter);
     }
 
     @Override
     public Optional<CrosswordLetter> getCrosswordLetter(int rowIndex, int columnIndex){
-        Optional<CrosswordLetterModel> optionalCrosswordLetterModel = crossword.getValueIfInBounds(rowIndex, columnIndex);
+        Optional<CrosswordLetterModel> optionalCrosswordLetterModel = getValueIfInBounds(rowIndex, columnIndex);
         return optionalCrosswordLetterModel.map(letter -> letter);
     }
 
     @Override
     public int getGuessedLettersCount(){
         return (int)this.streamLetters()
-                        .filter(Objects::nonNull)
-                        .filter(CrosswordLetter::isGuessed)
-                        .count();
+                .filter(Objects::nonNull)
+                .filter(CrosswordLetter::isGuessed)
+                .count();
     }
 
     @Override
@@ -109,7 +97,7 @@ final class CrosswordModel implements Crossword {
 
     @Override
     public void printCrosswordInConsole(){
-        for(int i = 0; i < crossword.getSize(); i++){
+        for(int i = 0; i < getSize(); i++){
             Optional<CrosswordLetter> optionalLetter = getCrosswordLetter(i);
             if(optionalLetter.isPresent()){
                 CrosswordLetter temp = optionalLetter.get();
@@ -123,22 +111,14 @@ final class CrosswordModel implements Crossword {
             }else{
                 System.out.print("   ");
             }
-            if(crossword.isLastIndexInRow(i))
+            if(isLastIndexInRow(i))
                 System.out.println();
         }
     }
 
     DynamicMatrix<CrosswordLetterModel> getCrosswordData(){
-        return crossword;
+        return this;
     }
-
-    @NotNull
-    Stream<CrosswordLetterModel> streamCrosswordData(){
-        Stream.Builder<CrosswordLetterModel> builder = Stream.builder();
-        crossword.forEach(builder::add);
-        return builder.build();
-    }
-
 
     void addWordWithMeaning(String word, String meaning){
         wordsWithMeanings.put(word, meaning);
@@ -146,10 +126,6 @@ final class CrosswordModel implements Crossword {
 
     void setGenerationTime(double time){
         generationTime = time;
-    }
-
-    void setCrosswordData(DynamicMatrix<CrosswordLetterModel> crossword){
-        this.crossword = crossword;
     }
 
     void setCrosswordClueWord(String word){

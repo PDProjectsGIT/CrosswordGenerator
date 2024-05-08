@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Class that represents adjustable array structure.
@@ -141,6 +142,15 @@ public class DynamicArray<T> implements Iterable<T>{
         if (size >= 0) System.arraycopy(data, 0, tempData, shift, size);
         data = tempData;
         data[index + shift] = value;
+    }
+
+    /**
+     * Returns a sequential {@link Stream} with the elements of this collection.
+     *
+     * @return a sequential stream of elements from this collection
+     */
+    public Stream<T> stream(){
+        return Arrays.stream(data).sequential();
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 public class CrosswordFactory {
 
-    final private CrosswordModel crosswordModel;
+    private CrosswordMatrixModel crosswordModel;
 
     final private Stopwatch stopwatch;
 
@@ -36,7 +36,7 @@ public class CrosswordFactory {
     }
 
     public CrosswordFactory(){
-        crosswordModel = new CrosswordModel();
+        crosswordModel = new CrosswordMatrixModel();
         stopwatch = new Stopwatch();
     }
 
@@ -73,8 +73,8 @@ public class CrosswordFactory {
 
                 char currentLetter = wordUpperCase.charAt(letterIndex);
 
-                crosswordModel.stream()
-                        .sequential()
+                crosswordModel.streamLetters()
+                        //.sequential()
                         .map(Optional::ofNullable)
                         .forEachOrdered(tempLetterOptional ->{
                             if(tempLetterOptional.isPresent()){
@@ -124,8 +124,8 @@ public class CrosswordFactory {
 
         // I will modify CrosswordLetterModel objects, so we need to use DynamicMatrix stream method
         ArrayList<CrosswordLetterModel> possibleClueCrosswordLetters = new ArrayList<>(
-                crosswordModel.streamCrosswordData()
-                        .sequential()
+                crosswordModel.stream()
+                      //  .sequential()
                         .filter(letter -> (letter != null && !letter.isFirstLetter() && wordUpperCase.indexOf(letter.getLetter()) != -1))
                         .toList()
 
@@ -303,10 +303,13 @@ public class CrosswordFactory {
 
     private void setBestCrossword(@NotNull List<CrosswordWordPlacement> placements){
         float bestScore = 0;
-        DynamicMatrix<CrosswordLetterModel> crosswordData = crosswordModel.getCrosswordData();
-        DynamicMatrix<CrosswordLetterModel> bestCrossword = new DynamicMatrix<>(crosswordData);
+        //DynamicMatrix<CrosswordLetterModel> crosswordData = crosswordModel.getCrosswordData();
+        //DynamicMatrix<CrosswordLetterModel> bestCrossword = new DynamicMatrix<>(crosswordData);
+        CrosswordMatrixModel bestCrossword = new CrosswordMatrixModel(crosswordModel);
+
         for(CrosswordWordPlacement placement : placements){
-            DynamicMatrix<CrosswordLetterModel> newCrossword = new DynamicMatrix<>(crosswordData);
+            //DynamicMatrix<CrosswordLetterModel> newCrossword = new DynamicMatrix<>(crosswordData);
+            CrosswordMatrixModel newCrossword = new CrosswordMatrixModel(crosswordModel);
             placement.placeWord(newCrossword);
             float newScore = getCrosswordScore(newCrossword);
             if(newScore > bestScore){
@@ -315,7 +318,7 @@ public class CrosswordFactory {
             }
         }
         if(bestScore > 0){
-            crosswordModel.setCrosswordData(bestCrossword);
+            crosswordModel = bestCrossword;
         }
     }
 

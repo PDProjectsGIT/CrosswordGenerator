@@ -159,10 +159,6 @@ public class DynamicMatrix<T> extends DynamicArray<T> {
         return (index + 1) % numberOfColumns == 0;
     }
 
-    public Stream<T> stream(){
-        return Arrays.stream(data);
-    }
-
     public int calculateIndex(int rowIndex, int columnIndex){
         return rowIndex * numberOfColumns + columnIndex;
     }
