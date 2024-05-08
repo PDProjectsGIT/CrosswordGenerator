@@ -46,7 +46,7 @@ public class Main {
 
     public static void testPrint(int crosswordSize){
 
-        Crossword crossword = getCrossword(crosswordSize, false);
+        Crossword crossword = getCrossword(crosswordSize, true);
 
         System.out.println();
         System.out.println("Generation time (crossword): " + crossword.getTimeInMilliseconds());
@@ -66,6 +66,9 @@ public class Main {
 
     public static void main(String[] args) {
 
+        testPrint(15);
+        testPrint(15);
+        testPrint(15);
         testPrint(15);
         testPrint(15);
 

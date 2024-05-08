@@ -74,6 +74,7 @@ public class CrosswordFactory {
                 char currentLetter = wordUpperCase.charAt(letterIndex);
 
                 crosswordModel.stream()
+                        .sequential()
                         .map(Optional::ofNullable)
                         .forEachOrdered(tempLetterOptional ->{
                             if(tempLetterOptional.isPresent()){
@@ -97,6 +98,81 @@ public class CrosswordFactory {
         crosswordModel.addWordWithMeaning(wordUpperCase, meaning);
         stopwatch.stop();
         return true;
+    }
+
+    public boolean tryToInsertClueWord(String word, String definition){
+        stopwatch.start();
+
+        if(word == null || word.isEmpty() || definition == null || definition.isEmpty() ){
+            stopwatch.stop();
+            throw new CrosswordException("Provided word value is null or empty");
+        }
+
+        // exclude non-matching words
+        if(word.length() > (crosswordModel.getLettersCount() - crosswordModel.getWordsCount())){
+            stopwatch.stop();
+            return false;
+        }
+
+        final String wordUpperCase = word.toUpperCase();
+
+        // create map with each letter occurrence
+        Map<Character, Integer> clueWordLetterMap = new HashMap<>();
+        for(char letter : wordUpperCase.toCharArray()){
+            clueWordLetterMap.put(letter, clueWordLetterMap.getOrDefault(letter, 0) + 1);
+        }
+
+        // I will modify CrosswordLetterModel objects, so we need to use DynamicMatrix stream method
+        ArrayList<CrosswordLetterModel> possibleClueCrosswordLetters = new ArrayList<>(
+                crosswordModel.streamCrosswordData()
+                        .sequential()
+                        .filter(letter -> (letter != null && !letter.isFirstLetter() && wordUpperCase.indexOf(letter.getLetter()) != -1))
+                        .toList()
+
+        );
+
+        // shuffle to get random positions of clue letters
+        Collections.shuffle(possibleClueCrosswordLetters);
+
+        // list with matching objects
+        List<CrosswordLetterModel> matchingClueCrosswordLetters = new ArrayList<>() ;
+
+        // count letters occurrence and fill list of matching CrosswordLetters
+        possibleClueCrosswordLetters.forEach(crosswordLetterModel ->
+                clueWordLetterMap.compute(crosswordLetterModel.getLetter(), (_, currentCount) -> {
+                    if(currentCount == null || currentCount <= 0){
+                        return 0;
+                    }else{
+                        matchingClueCrosswordLetters.add(crosswordLetterModel);
+                        return currentCount - 1;
+                    }
+                })
+        );
+
+        // check if is possible to insert clue word
+        if(matchingClueCrosswordLetters.size() == wordUpperCase.length()){
+
+            // erase previous clue number letters
+            if(crosswordModel.getCrosswordClueWord().isPresent()){
+                possibleClueCrosswordLetters.stream()
+                        .filter(CrosswordLetterModel::isClueLetter)
+                        .forEach(CrosswordLetterModel::clearFirstOrClueLetterSetting);
+            }
+
+            // set letters as clue letters with number of
+            matchingClueCrosswordLetters.forEach(crosswordLetterModel -> {
+                char letter = crosswordLetterModel.getLetter();
+                crosswordLetterModel.setClueLetter(wordUpperCase.indexOf(letter) + 1);
+            });
+
+            crosswordModel.setCrosswordClueWord(word);
+            crosswordModel.setCrosswordClueDefinition(definition);
+            stopwatch.stop();
+            return true;
+        }else{
+            stopwatch.stop();
+            return false;
+        }
     }
 
     private Optional<CrosswordWordPlacement> getPlacement(int crosswordIndex, int letterIndex, String word){
@@ -239,7 +315,7 @@ public class CrosswordFactory {
             }
         }
         if(bestScore > 0){
-            crosswordModel.setNewCrosswordData(bestCrossword);
+            crosswordModel.setCrosswordData(bestCrossword);
         }
     }
 
@@ -264,77 +340,4 @@ public class CrosswordFactory {
         return (sizeRatio * 10) + (filledRatio * 20);
     }
 
-    public boolean tryToInsertClueWord(String word, String definition){
-        stopwatch.start();
-
-        if(word == null || definition == null || word.isEmpty()){
-            stopwatch.stop();
-            throw new CrosswordException("Provided word value is null or empty");
-        }
-
-        // exclude non-matching words
-        if(word.length() > (crosswordModel.getLettersCount() - crosswordModel.getWordsCount())){
-            stopwatch.stop();
-            return false;
-        }
-
-        final String wordUpperCase = word.toUpperCase();
-
-        // create map with each letter occurrence
-        Map<Character, Integer> clueWordLetterMap = new HashMap<>();
-        for(char letter : wordUpperCase.toCharArray()){
-            clueWordLetterMap.put(letter, clueWordLetterMap.getOrDefault(letter, 0) + 1);
-        }
-
-        // I will modify CrosswordLetterModel objects, so we need to use DynamicMatrix stream method
-        ArrayList<CrosswordLetterModel> possibleClueCrosswordLetters = new ArrayList<>(
-                crosswordModel.getCrosswordData().stream()
-                        .filter(letter -> (letter != null && !letter.isFirstLetter() && wordUpperCase.indexOf(letter.getLetter()) != -1))
-                        .toList()
-
-        );
-
-        // shuffle to get random positions of clue letters
-        Collections.shuffle(possibleClueCrosswordLetters);
-
-        // list with matching objects
-        List<CrosswordLetterModel> matchingClueCrosswordLetters = new ArrayList<>() ;
-
-        // count letters occurrence and fill list of matching CrosswordLetters
-        possibleClueCrosswordLetters.forEach(crosswordLetterModel ->
-                clueWordLetterMap.compute(crosswordLetterModel.getLetter(), (_, currentCount) -> {
-                    if(currentCount == null || currentCount <= 0){
-                        return 0;
-                    }else{
-                        matchingClueCrosswordLetters.add(crosswordLetterModel);
-                        return currentCount - 1;
-                    }
-                })
-        );
-
-        // check if is possible to insert clue word
-        if(matchingClueCrosswordLetters.size() == wordUpperCase.length()){
-
-            // erase previous clue number letters
-            if(crosswordModel.getCrosswordClueWord().isPresent()){
-                possibleClueCrosswordLetters.stream()
-                        .filter(CrosswordLetterModel::isClueLetter)
-                        .forEach(CrosswordLetterModel::clearFirstOrClueLetterSetting);
-            }
-
-            // set letters as clue letters with number of
-            matchingClueCrosswordLetters.forEach(crosswordLetterModel -> {
-                char letter = crosswordLetterModel.getLetter();
-                crosswordLetterModel.setClueLetter(wordUpperCase.indexOf(letter) + 1);
-            });
-
-            crosswordModel.setNewCrosswordClueWord(word);
-            crosswordModel.setNewCrosswordClueDefinition(definition);
-            stopwatch.stop();
-            return true;
-        }else{
-            stopwatch.stop();
-            return false;
-        }
-    }
 }

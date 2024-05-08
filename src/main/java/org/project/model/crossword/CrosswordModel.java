@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.project.model.crossword.structures.DynamicMatrix;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 final class CrosswordModel implements Crossword {
@@ -52,7 +50,7 @@ final class CrosswordModel implements Crossword {
     public @NotNull Stream<CrosswordLetter> stream(){
         Stream.Builder<CrosswordLetter> builder = Stream.builder();
         crossword.forEach(builder::add);
-        return builder.build().sequential();
+        return builder.build();
     }
 
     @Override
@@ -129,27 +127,35 @@ final class CrosswordModel implements Crossword {
         }
     }
 
-    void addWordWithMeaning(String word, String meaning){
-        wordsWithMeanings.put(word, meaning);
-    }
-
     DynamicMatrix<CrosswordLetterModel> getCrosswordData(){
         return crossword;
+    }
+
+    @NotNull
+    Stream<CrosswordLetterModel> streamCrosswordData(){
+        Stream.Builder<CrosswordLetterModel> builder = Stream.builder();
+        crossword.forEach(builder::add);
+        return builder.build();
+    }
+
+
+    void addWordWithMeaning(String word, String meaning){
+        wordsWithMeanings.put(word, meaning);
     }
 
     void setGenerationTime(double time){
         generationTime = time;
     }
 
-    void setNewCrosswordData(DynamicMatrix<CrosswordLetterModel> crossword){
+    void setCrosswordData(DynamicMatrix<CrosswordLetterModel> crossword){
         this.crossword = crossword;
     }
 
-    void setNewCrosswordClueWord(String word){
+    void setCrosswordClueWord(String word){
         wordClue = word;
     }
 
-    void setNewCrosswordClueDefinition(String definition){
+    void setCrosswordClueDefinition(String definition){
         wordClueDefinition = definition;
     }
 }
