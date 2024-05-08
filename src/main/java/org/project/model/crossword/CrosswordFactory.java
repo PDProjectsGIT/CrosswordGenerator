@@ -46,7 +46,7 @@ public class CrosswordFactory {
     }
 
     public boolean insertWord(String word, String meaning){
-        //return crosswordModel.insertWord(word, meaning);
+
         stopwatch.start();
 
         if(word == null || word.isEmpty() || meaning == null || meaning.isEmpty()) {
@@ -60,7 +60,7 @@ public class CrosswordFactory {
         if(crosswordModel.getSize() == 0){
             CrosswordWordPlacement cWP = new CrosswordWordPlacement(0, 0,
                     CrosswordWordPlacement.Direction.HORIZONTAL, wordUpperCase, 1);
-            cWP.placeWord(crosswordModel.getCrosswordData());
+            cWP.placeWord(crosswordModel);
 
         }else{
 
@@ -74,7 +74,6 @@ public class CrosswordFactory {
                 char currentLetter = wordUpperCase.charAt(letterIndex);
 
                 crosswordModel.streamLetters()
-                        //.sequential()
                         .map(Optional::ofNullable)
                         .forEachOrdered(tempLetterOptional ->{
                             if(tempLetterOptional.isPresent()){
@@ -125,10 +124,8 @@ public class CrosswordFactory {
         // I will modify CrosswordLetterModel objects, so we need to use DynamicMatrix stream method
         ArrayList<CrosswordLetterModel> possibleClueCrosswordLetters = new ArrayList<>(
                 crosswordModel.stream()
-                      //  .sequential()
                         .filter(letter -> (letter != null && !letter.isFirstLetter() && wordUpperCase.indexOf(letter.getLetter()) != -1))
                         .toList()
-
         );
 
         // shuffle to get random positions of clue letters
@@ -176,7 +173,7 @@ public class CrosswordFactory {
     }
 
     private Optional<CrosswordWordPlacement> getPlacement(int crosswordIndex, int letterIndex, String word){
-        DynamicMatrix<CrosswordLetterModel> crosswordData = crosswordModel.getCrosswordData();
+        CrosswordMatrixModel crosswordData = crosswordModel;
         int rowIndex = crosswordData.calculateRowIndex(crosswordIndex);
         int columnsIndex = crosswordData.calculateColumnIndex(crosswordIndex);
         Optional<CrosswordWordPlacement> optionalCWP = getVerticalPlacement(crosswordData, rowIndex, columnsIndex, letterIndex, word);
@@ -186,7 +183,7 @@ public class CrosswordFactory {
         return optionalCWP;
     }
 
-    private Optional<CrosswordWordPlacement> getVerticalPlacement(DynamicMatrix<CrosswordLetterModel> crosswordData, int rowIndex, int columnIndex, int letterIndex, String word){
+    private Optional<CrosswordWordPlacement> getVerticalPlacement(@NotNull DynamicMatrix<CrosswordLetterModel> crosswordData, int rowIndex, int columnIndex, int letterIndex, String word){
         final int numberOfRows = crosswordData.getNumberOfRows();
         final int numberOfColumns = crosswordData.getNumberOfColumns();
 
@@ -244,7 +241,7 @@ public class CrosswordFactory {
         }
     }
 
-    private Optional<CrosswordWordPlacement> getHorizontalPlacement(DynamicMatrix<CrosswordLetterModel> crosswordData, int rowIndex, int columnIndex, int letterIndex, String word){
+    private Optional<CrosswordWordPlacement> getHorizontalPlacement(@NotNull DynamicMatrix<CrosswordLetterModel> crosswordData, int rowIndex, int columnIndex, int letterIndex, String word){
         final int numberOfRows = crosswordData.getNumberOfRows();
         final int numberOfColumns = crosswordData.getNumberOfColumns();
 
@@ -302,16 +299,17 @@ public class CrosswordFactory {
     }
 
     private void setBestCrossword(@NotNull List<CrosswordWordPlacement> placements){
+
         float bestScore = 0;
-        //DynamicMatrix<CrosswordLetterModel> crosswordData = crosswordModel.getCrosswordData();
-        //DynamicMatrix<CrosswordLetterModel> bestCrossword = new DynamicMatrix<>(crosswordData);
+
         CrosswordMatrixModel bestCrossword = new CrosswordMatrixModel(crosswordModel);
 
         for(CrosswordWordPlacement placement : placements){
-            //DynamicMatrix<CrosswordLetterModel> newCrossword = new DynamicMatrix<>(crosswordData);
+
             CrosswordMatrixModel newCrossword = new CrosswordMatrixModel(crosswordModel);
             placement.placeWord(newCrossword);
             float newScore = getCrosswordScore(newCrossword);
+
             if(newScore > bestScore){
                 bestScore = newScore;
                 bestCrossword = newCrossword;

@@ -1,7 +1,5 @@
 package org.project.model.crossword;
 
-import org.project.model.crossword.structures.DynamicMatrix;
-
 import java.util.Optional;
 
 final class CrosswordWordPlacement {
@@ -23,7 +21,7 @@ final class CrosswordWordPlacement {
         this.wordNumber = wordNumber;
     }
 
-    void placeWord(DynamicMatrix<CrosswordLetterModel> crossword){
+    void placeWord(CrosswordMatrixModel crossword){
         int tempRowIndex = rowIndex;
         int tempColumnIndex = columnIndex;
         CrosswordLetterModel firstLetter = new CrosswordLetterModel(word.charAt(0));

@@ -1,8 +1,6 @@
 package org.project.model.crossword.structures;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Class that represent adjustable matrix structure. It's extends DynamicArray class.

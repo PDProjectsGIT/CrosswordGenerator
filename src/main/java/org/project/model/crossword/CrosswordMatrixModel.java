@@ -1,10 +1,13 @@
 package org.project.model.crossword;
 
 import org.jetbrains.annotations.NotNull;
-import org.project.model.crossword.structures.DynamicMatrix;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
+import org.project.model.crossword.structures.DynamicMatrix;
 
 final class CrosswordMatrixModel extends DynamicMatrix<CrosswordLetterModel> implements Crossword {
 
@@ -84,7 +87,6 @@ final class CrosswordMatrixModel extends DynamicMatrix<CrosswordLetterModel> imp
         return wordsWithMeanings.keySet().size();
     }
 
-
     @Override
     public Optional<String> getCrosswordClueWord() {
         return Optional.ofNullable(wordClue);
@@ -114,10 +116,6 @@ final class CrosswordMatrixModel extends DynamicMatrix<CrosswordLetterModel> imp
             if(isLastIndexInRow(i))
                 System.out.println();
         }
-    }
-
-    DynamicMatrix<CrosswordLetterModel> getCrosswordData(){
-        return this;
     }
 
     void addWordWithMeaning(String word, String meaning){

@@ -146,7 +146,6 @@ public class DynamicArray<T> implements Iterable<T>{
 
     /**
      * Returns a sequential {@link Stream} with the elements of this collection.
-     *
      * @return a sequential stream of elements from this collection
      */
     public Stream<T> stream(){
