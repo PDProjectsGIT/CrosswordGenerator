@@ -1,14 +1,11 @@
 package org.project;
 
 import org.project.model.crossword.Crossword;
-import org.project.model.crossword.CrosswordBuilder;
+import org.project.model.crossword.CrosswordFactory;
 import org.project.model.crossword.CrosswordException;
 import org.project.model.sjp.SJPException;
 import org.project.model.sjp.SJPGameParser;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -16,7 +13,7 @@ public class Main {
 
     public static Crossword getCrossword(int wordCounter, boolean withClue) throws CrosswordException{
         SJPGameParser sjpGameParser = new SJPGameParser();
-        CrosswordBuilder crosswordBuilder = new CrosswordBuilder();
+        CrosswordFactory crosswordBuilder = new CrosswordFactory();
         String clueWord = "default";
         String clueDefinition = "default";
 
@@ -49,7 +46,7 @@ public class Main {
 
     public static void testPrint(int crosswordSize){
 
-        Crossword crossword = getCrossword(crosswordSize, true);
+        Crossword crossword = getCrossword(crosswordSize, false);
 
         System.out.println();
         System.out.println("Generation time (crossword): " + crossword.getTimeInMilliseconds());
