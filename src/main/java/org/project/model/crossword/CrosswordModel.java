@@ -6,19 +6,44 @@ import org.project.model.crossword.structures.DynamicMatrix;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Deprecated: This class represents a model for a crossword puzzle.
+ * It provides methods to interact with the crossword puzzle, such as retrieving letters and statistics.
+ * It is recommended to use {@link CrosswordMatrixModel} class instead.
+ * @author Pawe&#x142; Drzazga
+ * @version 1.0
+ */
 @Deprecated
 final class CrosswordModel implements Crossword {
 
+    /**
+     * A map storing words with their meanings for clues.
+     */
     final private HashMap<String, String> wordsWithMeanings;
 
+    /**
+     * The time taken to generate the crossword puzzle in milliseconds.
+     */
     private double generationTime;
 
+    /**
+     * The clue word for the crossword puzzle.
+     */
     private String wordClue;
 
+    /**
+     * The definition of the clue word for the crossword puzzle.
+     */
     private String wordClueDefinition;
 
+    /**
+     * The matrix representing the crossword puzzle grid.
+     */
     private DynamicMatrix<CrosswordLetterModel> crossword;
 
+    /**
+     * Constructs a new CrosswordModel object with default values.
+     */
     CrosswordModel(){
         generationTime = 0;
         wordsWithMeanings = new HashMap<>();
@@ -96,7 +121,6 @@ final class CrosswordModel implements Crossword {
         return wordsWithMeanings.keySet().size();
     }
 
-
     @Override
     public Optional<String> getCrosswordClueWord() {
         return Optional.ofNullable(wordClue);
@@ -128,10 +152,18 @@ final class CrosswordModel implements Crossword {
         }
     }
 
+    /**
+     * Retrieves the data of the crossword puzzle as a dynamic matrix of CrosswordLetterModel objects.
+     * @return The crossword puzzle data.
+     */
     DynamicMatrix<CrosswordLetterModel> getCrosswordData(){
         return crossword;
     }
 
+    /**
+     * Retrieves a stream of CrosswordLetterModel objects representing the crossword puzzle data.
+     * @return A stream of CrosswordLetterModel objects.
+     */
     @NotNull
     Stream<CrosswordLetterModel> streamCrosswordData(){
         Stream.Builder<CrosswordLetterModel> builder = Stream.builder();
@@ -139,23 +171,43 @@ final class CrosswordModel implements Crossword {
         return builder.build();
     }
 
-
+    /**
+     * Adds a word with its meaning to the map of words with meanings for clues.
+     * @param word The word.
+     * @param meaning The meaning of the word.
+     */
     void addWordWithMeaning(String word, String meaning){
         wordsWithMeanings.put(word, meaning);
     }
 
+    /**
+     * Sets the time taken to generate the crossword puzzle.
+     * @param time The generation time in milliseconds.
+     */
     void setGenerationTime(double time){
         generationTime = time;
     }
 
+    /**
+     * Sets the data of the crossword puzzle.
+     * @param crossword The crossword puzzle data.
+     */
     void setCrosswordData(DynamicMatrix<CrosswordLetterModel> crossword){
         this.crossword = crossword;
     }
 
+    /**
+     * Sets the clue word for the crossword puzzle.
+     * @param word The clue word.
+     */
     void setCrosswordClueWord(String word){
         wordClue = word;
     }
 
+    /**
+     * Sets the definition of the clue word for the crossword puzzle.
+     * @param definition The definition of the clue word.
+     */
     void setCrosswordClueDefinition(String definition){
         wordClueDefinition = definition;
     }

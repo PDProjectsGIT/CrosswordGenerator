@@ -33,8 +33,6 @@ public class Main {
                         clueDefinition = sjpGameParser.getRandomMeaning().orElse("default") ));
             }
 
-
-
         }catch (SJPException e) {
             System.out.println(e.getMessage());
         }catch (CrosswordException e){
