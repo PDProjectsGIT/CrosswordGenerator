@@ -73,7 +73,12 @@ public class DynamicMatrix<T> extends DynamicArray<T> {
         data[calculateIndex(rowIndex, columnIndex)] = value;
     }
 
-
+    /**
+     * Retrieves the value at the specified row and column index.
+     * @param rowIndex The row index from which to retrieve the value.
+     * @param columnIndex The column index from which to retrieve the value.
+     * @return An Optional containing the value at the specified row and column index if present, otherwise empty.
+     */
     public Optional<T> getValueIfInBounds(int rowIndex, int columnIndex){
         if(rowIndex < 0 || columnIndex < 0)
             return Optional.empty();
@@ -144,52 +149,108 @@ public class DynamicMatrix<T> extends DynamicArray<T> {
         data[calculateIndex(rowIndex + rowShift, columnIndex + columnShift)] = value;
     }
 
+    /**
+     * Retrieves the number of rows in the DynamicMatrix.
+     * @return The number of rows.
+     */
     public int getNumberOfRows(){
         return numberOfRows;
     }
 
+    /**
+     * Retrieves the number of columns in the DynamicMatrix.
+     * @return The number of columns.
+     */
     public int getNumberOfColumns(){
         return numberOfColumns;
     }
 
+    /**
+     * Checks if the specified index is the last index in its row.
+     * @param index The index to check.
+     * @return True if the index is the last index in its row, otherwise false.
+     */
     public boolean isLastIndexInRow(int index) {
         if(numberOfColumns == 0) return false;
         return (index + 1) % numberOfColumns == 0;
     }
 
+    /**
+     * Calculates the linear index for the given row and column cords.
+     * @param rowIndex The row index.
+     * @param columnIndex The column index.
+     * @return The calculated linear index.
+     */
     public int calculateIndex(int rowIndex, int columnIndex){
         return rowIndex * numberOfColumns + columnIndex;
     }
 
+    /**
+     * Calculates the linear index for the given row and column cords, considering a new number of columns.
+     * @param rowIndex The row index.
+     * @param columnIndex The column index.
+     * @param newNumberOfColumns The new number of columns to consider.
+     * @return The calculated linear index.
+     */
     private int calculateIndexWithShift(int rowIndex, int columnIndex, int newNumberOfColumns){
         return rowIndex * newNumberOfColumns + columnIndex;
     }
 
+    /**
+     * Calculates the row index for the given linear index.
+     * @param index The linear index.
+     * @return The calculated row index.
+     */
     public int calculateRowIndex(int index) {
         if(numberOfColumns == 0) return 0;
         return index / numberOfColumns;
     }
 
+    /**
+     * Calculates the column index for the given linear index.
+     * @param index The linear index.
+     * @return The calculated column index.
+     */
     public int calculateColumnIndex(int index) {
         if(numberOfColumns == 0) return 0;
         return index % numberOfColumns;
     }
 
+    /**
+     * Retrieves the index of the row following the given index, if it exists.
+     * @param index The current index.
+     * @return An Optional containing the index of the next row if it exists, otherwise empty.
+     */
     public Optional<Integer> nextRow(int index) {
         int nextRowIndex = index + numberOfColumns;
         return nextRowIndex < (numberOfRows * numberOfColumns) ? Optional.of(nextRowIndex) : Optional.empty();
     }
 
+    /**
+     * Retrieves the index of the column following the given index, if it exists.
+     * @param index The current index.
+     * @return An Optional containing the index of the next column if it exists, otherwise empty.
+     */
     public Optional<Integer> nextColumn(int index) {
         int nextColumnIndex = index + 1;
         return nextColumnIndex % numberOfColumns != 0 ? Optional.of(nextColumnIndex) : Optional.empty();
     }
 
+    /**
+     * Retrieves the index of the row preceding the given index, if it exists.
+     * @param index The current index.
+     * @return An Optional containing the index of the previous row if it exists, otherwise empty.
+     */
     public Optional<Integer> prevRow(int index) {
         int prevRowIndex = index - numberOfColumns;
         return prevRowIndex >= 0 ? Optional.of(prevRowIndex) : Optional.empty();
     }
 
+    /**
+     * Retrieves the index of the column preceding the given index, if it exists.
+     * @param index The current index.
+     * @return An Optional containing the index of the previous column if it exists, otherwise empty.
+     */
     public Optional<Integer> prevColumn(int index) {
         int prevColumnIndex = index - 1;
         return prevColumnIndex >= 0 && prevColumnIndex % numberOfColumns != numberOfColumns - 1 ? Optional.of(prevColumnIndex) : Optional.empty();
