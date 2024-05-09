@@ -45,6 +45,12 @@ public class CrosswordFactory {
         return crosswordModel;
     }
 
+    public List<Crossword> getPossibleCrosswords(String word, String meaning){
+        //TODO Method will return all possible crossword.
+        // Next is to rebuild insertWord, it will use getPossibleCrosswords
+        return List.of();
+    }
+    
     public boolean insertWord(String word, String meaning){
 
         stopwatch.start();
@@ -340,5 +346,4 @@ public class CrosswordFactory {
         float filledRatio = filled / (float) empty;
         return (sizeRatio * 10) + (filledRatio * 20);
     }
-
 }
